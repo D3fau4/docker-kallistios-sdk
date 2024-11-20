@@ -5,7 +5,7 @@ FROM debian:stable-slim
 
 # Prerequirements / second line for libs / third line for mksdiso & img4dc
 RUN apt-get update && apt-get -y install build-essential git curl texinfo python3 subversion \
-	libjpeg-dev libpng++-dev \
+	libjpeg-dev libpng++-dev libgmp-dev libmpfr-dev \
 	genisoimage p7zip-full cmake && \
 	apt-get clean
 
@@ -20,7 +20,7 @@ RUN cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/envir
 
 # Build Toolchain
 WORKDIR /opt/toolchains/dc/kos/utils/dc-chain
-RUN make erase=1
+RUN make -j
 WORKDIR /opt/toolchains/dc/kos/utils/kmgenc 
 RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh; make'
 
