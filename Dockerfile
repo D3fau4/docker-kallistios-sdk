@@ -5,7 +5,7 @@ FROM debian:stable-slim
 
 # Prerequirements / second line for libs / third line for mksdiso & img4dc
 RUN apt update && apt -y install build-essential git curl texinfo python3 subversion rake \
-	libjpeg-dev libpng++-dev libgmp-dev libmpfr-dev \
+	libjpeg-dev libpng++-dev libgmp-dev libmpfr-dev libncurses-dev \
 	genisoimage p7zip-full cmake && \
 	apt clean
 
