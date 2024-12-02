@@ -28,6 +28,8 @@ RUN make -j
 WORKDIR /opt/toolchains/dc/kos/utils/kmgenc 
 RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh; make'
 
+COPY patched-kallistos-ports.sh /opt/toolchains/dc/kos-ports/utils/build-all.sh
+
 # Build KOS-/Ports
 WORKDIR /opt/toolchains/dc/kos
 RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh; make ; make kos-ports_all'
