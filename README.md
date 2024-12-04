@@ -3,45 +3,36 @@ This image provides a full powered [KallistiOS](http://gamedev.allusion.net/soft
 It has been build, so you don't have to compile/setup the KOS-Toolchain yourself & keep your system clean. If you have Docker installed on your system - it's like one command to compile your code using KOS!
 
 ## Image Tags & Included Software
-|nold360/kallistios-sdk:minimal|
+|ghcr.io/d3fau4/kallistios-sdk:minimal|
 |---|
 |Based on Debian Jessie|
 |Latest KallistiOS SDK + Ported Libraries|
 
-|nold360/kallistios-sdk:latest|
+|ghcr.io/d3fau4/kallistios-sdk:latest|
 |---|
-|Based on nold360/kallistios-sdk:minimal|
+|Based on ghcr.io/d3fau4/kallistios-sdk:minimal|
 |Latest [mksdiso](https://github.com/Nold360/mksdiso) Toolkit for creating SD-ISOs, scrambling & more|
 |mds4dc & cdi4dc for Image creation ([source](https://github.com/kazade/img4dc))|
 |makeip for custom IP.BIN creation (taken from mksdiso)|
 | Other Dreamcast-related tools: binhack32, burncdi, cdirip, isofix, makeip, scramble|
 
-|nold360/kallistios-sdk:dreamshell|
-|---|
-|Based on nold360/kallistios-sdk:latest|
-|Latest [DreamShell](https://github.com/Nold360/DreamShell)* Sourcecode  & Toolchain|
-|Patched GCC 5.2.0 & KOS-Toolchain|
-|More Ported Libs (SDL, ...)|
-
-\* I've forked Dreamshell, so I don't have to do so much patching in the Dockerfile. I made no modifications to DS itself!
-
-I've also created a wrapper-script called "**[dcbuild](https://github.com/Nold360/docker-kallistios-sdk/blob/master/dcbuild.sh)**" which handles some development tasks for you!
+I've also created a wrapper-script called "**[dcbuild](https://github.com/D3fau4/docker-kallistios-sdk/blob/master/dcbuild.sh)**" which handles some development tasks for you!
 Here is a quick video demonstation of dcbuild + this container here: https://www.youtube.com/watch?v=yjm4iSrerM0
 
 ## Using the image
 If you have created your first KOS project and built a Makefile for it, you can compile your sourcecode like this:
 ```
-$ docker run -ti -v $(pwd):/src nold360/kallistios-sdk make
+$ docker run -ti -v $(pwd):/src ghcr.io/d3fau4/kallistios-sdk make
 ```
 
 The Volume `-v $(pwd):/src`will include your current working directory (aka your KOS-project directory) into the container.
 The `make` command at the end is default and can be changed as needed. (Like `make dreamcast` or whatever).
 
 ## Installing dcbuild
-You will find an additional shellscript called "dcbuild" in the [Github](https://github.com/nold360/docker-kallistios-sdk) of this container.
+You will find an additional shellscript called "dcbuild" in the [Github](https://github.com/D3fau4/docker-kallistios-sdk) of this container.
 Install the script inside the PATH of your **HOST** running this container:
 ```
-$ sudo wget -O/usr/local/bin/dcbuild https://raw.githubusercontent.com/Nold360/docker-kallistios-sdk/master/dcbuild.sh
+$ sudo wget -O/usr/local/bin/dcbuild https://raw.githubusercontent.com/D3fau4/docker-kallistios-sdk/master/dcbuild.sh
 $ sudo chmod +x /usr/local/bin/dcbuild
 ```
 
@@ -153,4 +144,4 @@ Title of your game (will be used in ISO, **not** IP.BIN)
 
 ## Troubleshooting
 You can run bash in your SDK Environemnt, too. This might help finding the problem. Also feel free to open issues on [github](https://github.com/Nold360/docker-kallistios-sdk)
-`$ docker run -ti -v $(pwd):/src nold360/kallistios-sdk bash`
+`$ docker run -ti -v $(pwd):/src ghcr.io/d3fau4/kallistios-sdk bash`
