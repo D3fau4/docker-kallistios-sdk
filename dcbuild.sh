@@ -14,7 +14,7 @@ fi
 # Environment Configuration Defaults
 ISO=${ISO:-mygame.iso}
 GAME_TITLE=${GAME_TITLE:-MY_GAME}
-DOCKER_IMAGE="nold360/kallistios-sdk"
+DOCKER_IMAGE="ghcr.io/d3fau4/kallistios-sdk:master"
 DCRUN="docker run --rm -ti -v $(pwd):/src $DOCKER_IMAGE"
 
 function usage {
