@@ -10,13 +10,16 @@ RUN apt update && \
 	genisoimage p7zip-full cmake gawk patch bzip2 tar make \
 	cmake pkg-config gettext wget bison flex sed meson ninja-build \
 	diffutils python3 rake squashfs-tools libmpc-dev libelf-dev \
-	libisofs-dev liblzo2-dev && \
+	libisofs-dev liblzo2-dev git libbz2-dev && \
 	apt clean
 
-# Fetch sources
 RUN mkdir -p /opt/toolchains/dc && \
-	git clone --depth=1 https://github.com/KallistiOS/KallistiOS /opt/toolchains/dc/kos && \
-	git clone --depth=1 https://github.com/KallistiOS/kos-ports  /opt/toolchains/dc/kos-ports
+	chmod -R 755 /opt/toolchains/dc && \
+	chown -R $(id -u):$(id -g) /opt/toolchains/dc
+
+# Fetch sources
+RUN git clone --depth=1 https://github.com/KallistiOS/KallistiOS /opt/toolchains/dc/kos && \
+	git clone --recursive https://github.com/KallistiOS/kos-ports  /opt/toolchains/dc/kos-ports
 
 # Setup KOS Environment
 RUN cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/environ.sh && \
@@ -24,18 +27,19 @@ RUN cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/envir
 
 # Build Toolchain
 WORKDIR /opt/toolchains/dc/kos/utils/dc-chain
-RUN make -j
+RUN cp Makefile.dreamcast.cfg Makefile.cfg && \
+	make -j && \
+	make clean distclean
 WORKDIR /opt/toolchains/dc/kos/utils/kmgenc 
 RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh; make'
 
-COPY patched-kallistos-ports.sh /opt/toolchains/dc/kos-ports/utils/build-all.sh
-
-# Add execute permission to the build-all.sh script
-RUN chmod +x /opt/toolchains/dc/kos-ports/utils/build-all.sh
+# Build KOS
+WORKDIR /opt/toolchains/dc/kos
+RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh; make'
 
 # Build KOS-/Ports
 WORKDIR /opt/toolchains/dc/kos
-RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh; make ; make kos-ports_all'
+RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh; bash /opt/toolchains/dc/kos-ports/utils/build-all.sh'
 
 # Volume to compile project sourcecode
 VOLUME /src
