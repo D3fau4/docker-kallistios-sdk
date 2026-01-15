@@ -45,5 +45,4 @@ RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh; bash /opt/toolchains/dc/k
 VOLUME /src
 WORKDIR /src
 COPY ./run.sh /run.sh
-ENTRYPOINT [ "/run.sh" ]
-CMD [ "make" ]
+CMD [ "bash" ]
