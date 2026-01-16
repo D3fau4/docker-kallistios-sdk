@@ -1,17 +1,28 @@
+FROM debian:bookworm AS mkdcdisc-builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git ca-certificates \
+    build-essential pkg-config \
+    meson ninja-build \
+    libisofs-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+# Puedes fijar una versión concreta (recomendado) pasando --build-arg MKDCDISC_REF=<commit|tag>
+ARG MKDCDISC_REF=main
+
+RUN git clone https://gitlab.com/simulant/mkdcdisc.git /src/mkdcdisc \
+ && cd /src/mkdcdisc \
+ && git checkout "${MKDCDISC_REF}" \
+ && meson setup builddir \
+ && meson compile -C builddir
+
 ########################################################################
 # Dockerfile to build KallistiOS Toolchain + Additional Dreamcast Tools
 ########################################################################
 FROM ghcr.io/d3fau4/kallistios-sdk:minimal
 
-# Additinal DC Tools:
-#  - mksdiso Toolkit
-#  - cdi4dc & mds4cd (iso converter)
-#
-RUN git clone --depth=1 https://github.com/Nold360/mksdiso /opt/mksdiso && \
-	cd /opt/mksdiso/ && cp -r mksdiso /root/.mksdiso && \
-	cp bin/burncdi bin/mksdiso /usr/local/bin/ && \
-	cd src && make all && make install && cp binhack/bin/binhack32 /usr/local/bin/
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libisofs6 ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN git clone --depth=1 https://github.com/kazade/img4dc /opt/img4dc && \
-	mkdir /opt/img4dc/build && cd /opt/img4dc/build && cmake .. && make && \
-	mv mds4dc/mds4dc cdi4dc/cdi4dc /usr/local/bin/
+COPY --from=mkdcdisc-builder /src/mkdcdisc/builddir/mkdcdisc /usr/local/bin/mkdcdisc
