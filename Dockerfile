@@ -28,7 +28,7 @@ RUN cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/envir
 # Build Toolchain
 WORKDIR /opt/toolchains/dc/kos/utils/dc-chain
 RUN cp Makefile.dreamcast.cfg Makefile.cfg && \
-	make -j && \
+	make toolchain_profile=15.0.0-lra  && \
 	make clean distclean
 WORKDIR /opt/toolchains/dc/kos/utils/kmgenc 
 RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh; make'
