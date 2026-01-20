@@ -1,3 +1,6 @@
+########################################################################
+# Dockerfile to build mkdcdisc (Dreamcast disc image creation tool)
+########################################################################
 FROM debian:bookworm AS mkdcdisc-builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -7,7 +10,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libisofs-dev \
  && rm -rf /var/lib/apt/lists/*
 
-# Puedes fijar una versión concreta (recomendado) pasando --build-arg MKDCDISC_REF=<commit|tag>
 ARG MKDCDISC_REF=main
 
 RUN git clone https://gitlab.com/simulant/mkdcdisc.git /src/mkdcdisc \
@@ -21,8 +23,13 @@ RUN git clone https://gitlab.com/simulant/mkdcdisc.git /src/mkdcdisc \
 ########################################################################
 FROM ghcr.io/d3fau4/kallistios-sdk:minimal
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libisofs6 ca-certificates \
- && rm -rf /var/lib/apt/lists/*
+# Build and install SDL2 for Dreamcast
+WORKDIR /usr/local/src
+RUN git clone --recursive https://github.com/GPF/SDL.git -b dreamcastSDL2 && \
+    cd SDL/build-scripts && \
+    bash -c 'source /opt/toolchains/dc/kos/environ.sh; ./dreamcast.sh' && \
+    rm -rf /usr/local/src/SDL
 
 COPY --from=mkdcdisc-builder /src/mkdcdisc/builddir/mkdcdisc /usr/local/bin/mkdcdisc
+
+WORKDIR /src
