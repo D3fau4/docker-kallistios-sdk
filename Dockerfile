@@ -25,7 +25,7 @@ FROM ghcr.io/d3fau4/kallistios-sdk:minimal
 
 # Build and install SDL2 for Dreamcast
 WORKDIR /usr/local/src
-RUN git clone --recursive https://github.com/GPF/SDL.git -b dreamcastSDL2 && \
+RUN git clone --recursive https://github.com/GPF/SDL.git -b dreamcastSDL3 && \
     cd SDL/build-scripts && \
     bash -c 'source /opt/toolchains/dc/kos/environ.sh; ./dreamcast.sh' && \
     rm -rf /usr/local/src/SDL
